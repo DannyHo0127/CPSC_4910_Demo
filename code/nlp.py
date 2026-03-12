@@ -89,7 +89,7 @@ Answer the user's question using ONLY the context provided below.
 Do not use any knowledge from outside this context.
 
 Rules:
-- Answer in a clear, detailed manner based on what the context actually says. Use whatever structure fits the question (prose, lists, or sections as needed).
+- Answer in a clear, detailed manner based on what the context actually says. Use whatever structure fits the question (prose, lists, or sections as needed). You may use markdown for formatting (e.g. **bold**, bullet lists, headers).
 - Do NOT mention "chunk", "Chunk", or any chunk numbers in your response. Write as if you are summarizing the guidelines directly.
 - If the context does not contain enough information to answer the question, say so clearly, then summarize what was found.
 - Do not speculate or add information not present in the context.

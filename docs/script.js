@@ -57,7 +57,12 @@
 
   function formatAssistantMessage(text) {
     if (!text) return '';
+    // Escape HTML first so user/model content is safe
     var escaped = text.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+    if (typeof marked !== 'undefined') {
+      marked.setOptions({ breaks: true });
+      return marked.parse(escaped);
+    }
     return linkify(escaped).replace(/\n/g, '<br>');
   }
 
