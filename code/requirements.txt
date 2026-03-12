@@ -1,0 +1,14 @@
+# RAG backend and UI server
+flask>=3.0.0
+
+# RAG pipeline (nlp.py + retrieval.py)
+ollama
+chromadb
+sentence-transformers
+rank-bm25
+torch
+transformers
+accelerate
+numpy
+tqdm
+boto3

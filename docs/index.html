@@ -59,6 +59,9 @@
           guidance.</p>
       </div>
 
+      <div id="backendBanner" style="display: none; margin-bottom: 1rem; padding: 0.75rem 1rem; background: #f27935; color: #fff; border-radius: 4px; font-size: 14px;">
+        <!-- Filled by script.js when backend is unreachable -->
+      </div>
       <div class="chat-container">
         <div class="messages" id="messages">
           <div class="messages-placeholder" id="placeholder">
@@ -79,6 +82,8 @@
     </div>
   </div>
 
+  <!-- Optional: set your deployed RAG backend URL (for GitHub Pages + external backend) -->
+  <!-- <script>window.CAPC_RAG_API_URL = 'https://your-backend.example.com/api/chat';</script> -->
   <script src="script.js"></script>
 </body>
 
