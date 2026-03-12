@@ -67,7 +67,7 @@ def generate_response(query: str, chunks: list[dict]) -> str:
     context_parts = []
     seen_urls = {}
 
-    for i, chunk in enumerate(chunks, start=1):
+    for chunk in chunks:
         text = chunk.get("text", "").strip()
         metadata = chunk.get("metadata", {})
         url = metadata.get("source_url", "").strip()
@@ -76,43 +76,31 @@ def generate_response(query: str, chunks: list[dict]) -> str:
         if url and url not in seen_urls:
             seen_urls[url] = title or url
 
-        context_parts.append(f"[Chunk {i}]\nSource: {url}\nTitle: {title}\n{text}")
+        context_parts.append(f"Source: {url}\nTitle: {title}\n{text}")
 
-    context_block = "\n\n".join(context_parts)
+    context_block = "\n\n---\n\n".join(context_parts)
 
     source_list = "\n".join(
         f"- {title}: {url}" for url, title in seen_urls.items()
     )
 
     prompt = f"""You are a veterinary parasitology assistant for CAPC (Companion Animal Parasite Council).
-Answer the user's question using ONLY the context chunks provided below.
-Do not use any knowledge from outside these chunks.
-
-Output format (follow this structure when the chunks contain relevant guidelines):
-1. Start with: "Based on the available CAPC guidelines, here are the recommendations for [parasite/condition name] ([scientific name if applicable]) [prevention/treatment/etc.] in [species if relevant]:"
-2. Use these section headers when the context supports them; use bullet points under each:
-   - Screening Protocols:
-   - Prevention and Prophylaxis:
-   - Treatment Strategies:
-   - Additional Recommendations: (e.g. external links like petdiseasealerts.org if mentioned)
-3. If the context is limited, add a brief "Note:" explaining what is or is not covered.
-4. End with "Sources:" on its own line, then list each relevant CAPC URL as "- https://capcvet.org/..."
+Answer the user's question using ONLY the context provided below.
+Do not use any knowledge from outside this context.
 
 Rules:
-- Include only sections for which the chunks provide information; omit empty sections.
-- Use bullet points (- item) under each section for clarity.
-- If the chunks do not contain enough information to answer the question, say exactly:
-  "The available CAPC guidelines do not contain enough information to answer this question."
-  then add a Note if helpful, then the Sources section.
-- Do not speculate or add information not present in the chunks.
-- List every relevant source URL from the chunks in the Sources section.
+- Answer in a clear, detailed manner based on what the context actually says. Use whatever structure fits the question (prose, lists, or sections as needed).
+- Do NOT mention "chunk", "Chunk", or any chunk numbers in your response. Write as if you are summarizing the guidelines directly.
+- If the context does not contain enough information to answer the question, say so clearly, then summarize what was found.
+- Do not speculate or add information not present in the context.
+- Always end with a "Sources:" section. List ONLY the CAPC URLs that were directly used to answer the question (omit sources that are not relevant to the user's question). Each source once, with full URL, e.g. "- https://capcvet.org/guidelines/..."
 
 User question: {query}
 
-Context chunks:
+Context:
 {context_block}
 
-Available sources:
+Available sources (use only those relevant to your answer):
 {source_list}"""
 
     response = ollama.chat(
